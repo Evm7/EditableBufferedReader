@@ -9,7 +9,7 @@ import java.io.*;
 
 /**
  *
- * @author virtual
+ * @author Evm7
  */
 public class TestReadLine {
 

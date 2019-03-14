@@ -8,16 +8,21 @@ package editablebufferedreader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
- * @author virtual
+ * @author Evm7
  */
-public final class Console {
+public  class Console implements Observer {
     
-    public Console() {
+    private Line line;
+    
+    public Console(Line line) {
         //Netejam Consola i ens situem en el principi de la consola.
         controlConsole("\033[0;0H \033[2J");
+        this.line=line;
     }
 
     public void controlConsole(String comanda) {
@@ -29,18 +34,16 @@ public final class Console {
             System.out.println("Error Connecting to Bash");
         }
     }
-    /*
-    public void print(String line){
-        this.controlConsole("\033[s");
+    
+    public void updateView(){
         this.clear();
-        System.out.print(line);
-        this.controlConsole("\033[u");
+        System.out.print(line.toString());
+        this.moveTo(line.getLinePos()+1, 0);
     }
-    */
-    public void print(String line,int pos){
-        this.clear();
-        System.out.print(line);
-        this.moveTo(pos, 0);
+        public void update(Observable obs, Object args){
+        if(obs==line){
+            updateView();
+        }
     }
 
     public void moveUp() {
@@ -69,6 +72,7 @@ public final class Console {
 
     public void clear() {
         this.controlConsole("\033[H \033[2J");
+        System.out.flush();
     }
 
     public void moveTo(int posx, int posy){

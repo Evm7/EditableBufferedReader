@@ -5,24 +5,24 @@
  */
 package editablebufferedreader;
 
+import java.util.Observable;
+
 /**
  *
- * @author virtual
+ * @author Evm7
  */
-public class Line {
+public class Line extends Observable {
 
-    private Console console;
     private StringLine line;
     private boolean mode = Boolean.FALSE; //True: sobreescriptura:setCharAt. False: inserció:insertCharAt
     private int posx; //és la posició del cursor respecte la línia, no sobre la comanda
 
-    public Line(Console console, int max) {
-        this.console = console;
+    public Line(int max) {
         this.posx = 0;
         this.line = new StringLine(max);
     }
 
-    public void addChar(char c) throws IndexOutOfBoundsException{
+    public void addChar(char c) throws IndexOutOfBoundsException {
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
             this.line.setCharAt(c, this.posx);
@@ -30,62 +30,71 @@ public class Line {
             this.line.insertCharAt(c, this.posx);
         }
         this.posx++;
-        this.console.print(this.line.toString(), this.posx);
+        this.setChanged();
+        this.notifyObservers();
     }
 
-    public void deleteChar() throws IndexOutOfBoundsException{
+    public void deleteChar() throws IndexOutOfBoundsException {
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
-        this.console.print(this.line.toString(), this.posx);
+        this.setChanged();
+        this.notifyObservers();
 
     }
 
-    public void suprimirChar() throws IndexOutOfBoundsException{
+    public void suprimirChar() throws IndexOutOfBoundsException {
         this.line.deleteCharAt(this.posx);
-        this.console.print(this.line.toString(), this.posx);
+        this.setChanged();
+        this.notifyObservers();
     }
 
     public void moveLeft() {
         if (this.posx > 0) {
             this.posx--;
-            this.console.moveLeft();
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
     public void moveRight() {
         if (this.posx < this.line.length()) {
             this.posx++;
-            this.console.moveRigth();
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
     public void moveEnd() {
         this.posx = this.line.length();
-        this.console.moveEnd(this.posx);
+        this.setChanged();
+        this.notifyObservers();
     }
 
     public void moveHome() {
         this.posx = 0;
-        this.console.moveHome(0);
+        this.setChanged();
+        this.notifyObservers();
 
     }
 
-    public void moveUp() {
+    public void moveUp() throws IndexOutOfBoundsException {
         int fin = this.posx - this.getNumCols();
         if (fin > 0) {
             this.posx = fin;
-            this.console.moveUp();
+            this.setChanged();
+            this.notifyObservers();
 
         } else {
             throw new IndexOutOfBoundsException();
         }
     }
 
-    public void moveDown() {
+    public void moveDown() throws IndexOutOfBoundsException {
         int fin = this.posx + this.getNumCols();
         if (fin < line.MAX) {
             this.posx = fin;
-            this.console.moveDown();
+            this.setChanged();
+            this.notifyObservers();
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -111,6 +120,8 @@ public class Line {
 
     public boolean setMode() {
         this.mode = !this.mode;
+        this.setChanged();
+        this.notifyObservers();
         return this.mode;
     }
 
@@ -119,6 +130,8 @@ public class Line {
             this.posx = posx;
             return Boolean.TRUE;
         }
+        this.setChanged();
+        this.notifyObservers();
         return Boolean.FALSE;
     }
 

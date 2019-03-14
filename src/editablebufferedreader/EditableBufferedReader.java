@@ -11,12 +11,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author virtual
+ * @author Evm7
  */
 public class EditableBufferedReader extends BufferedReader {
 
@@ -100,9 +98,10 @@ public class EditableBufferedReader extends BufferedReader {
 
     @Override
     public String readLine() {
-        Line line = new Line(new Console(), Integer.parseInt((this.getNumCols())));
+        Line line = new Line(Integer.parseInt(this.getNumCols()));
+        Console console = new Console(line);
+        line.addObserver(console);
         this.setRaw();
-        Boolean loop = Boolean.TRUE;
         int lect = -1;
         try{
         while (lect != Key.EXIT && lect!= Key.CRTL_C) {
