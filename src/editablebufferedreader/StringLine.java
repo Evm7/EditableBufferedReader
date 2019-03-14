@@ -16,21 +16,21 @@ public class StringLine {
     private int length = 0;
 
     public StringLine(int max) {
-        this.MAX=max;
-        string = new char[10*MAX]; //en aquest cas sols es poden fer 10 linies de coid
+        this.MAX = 10*max;
+        string = new char[10 * MAX]; //en aquest cas sols es poden fer 10 linies de coid
     }
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos
-
-    public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException{
-        if ((offset > this.MAX) | (offset < 0)) { //comprovar si el offset es mayor que el limite.
+    public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException {
+        /*if ((offset > this.MAX) | (offset < 0)) { //comprovar si el offset es mayor que el limite.
             throw new IndexOutOfBoundsException();
         }
-
-        for (int i = this.MAX-1; i > offset; i--) {
-            this.string[i] = this.string[i - 1];
-        }
-
+                */
+     
+            for (int i = this.MAX - 1; i > offset; i--) {
+                this.string[i] = this.string[i - 1];
+            }
+            
         this.string[offset] = c;
         this.length++;
         return this;
@@ -38,20 +38,25 @@ public class StringLine {
     }
 
     public StringLine deleteCharAt(int offset) throws IndexOutOfBoundsException {
-
-        if ((offset > this.MAX) | (offset <= 0)) {
+/*
+        if ((offset > this.MAX) | (offset < 0)) {
             throw new IndexOutOfBoundsException();
         }
+        */
+        if(offset==0){
+            return this;
+        }
 
-        for (int i = offset; i < this.length; i++) {
+        for (int i = offset; i < this.length - 1; i++) {
             this.string[i] = this.string[i + 1];
         }
+        this.string[this.length - 1] = ' ';
         this.length--;
         return this;
     }
 
     //implica reemplaçament, pel qual no s'augmenta length (exceptuant no hi ha res)
-    public StringLine setCharAt(char c, int offset) throws IndexOutOfBoundsException{
+    public StringLine setCharAt(char c, int offset) throws IndexOutOfBoundsException {
 
         if ((offset > this.MAX) | (offset < 0)) {
             throw new IndexOutOfBoundsException();
@@ -63,6 +68,7 @@ public class StringLine {
         return this;
     }
 
+    @Override
     public String toString() {
         return new String(this.string, 0, this.MAX);
     }

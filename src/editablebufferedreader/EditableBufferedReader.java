@@ -83,72 +83,80 @@ public class EditableBufferedReader extends BufferedReader {
                 return lect;
             }
             lect = super.read();
-            if (lect == Key.EXIT | lect==Key.CRTL_C) {
+            if (lect == Key.EXIT | lect == Key.CRTL_C) {
                 return Key.EXIT_KEY;
             }
-            if(lect == Key.CLAU){
+            if (lect == Key.CLAU) {
                 lect = super.read();
-                return lect-1000;
-            }                   
+                return lect - 1000;
+            }
         } catch (IOException ex) {
-                System.out.println("Interrupted Exception");
+            System.out.println("Interrupted Exception");
         }
         return Key.CARAC;
     }
 
     @Override
-    public String readLine() {
+    public String readLine() throws IOException {
         Line line = new Line(Integer.parseInt(this.getNumCols()));
         Console console = new Console(line);
         line.addObserver(console);
         this.setRaw();
         int lect = -1;
-        try{
-        while (lect != Key.EXIT && lect!= Key.CRTL_C) {
-            lect = this.read();
-            switch (lect) {
-                case (Key.UP - 1000):
-                    line.moveUp();
-                    break;
-                case (Key.DOWN - 1000):
-                    line.moveDown();
-                    break;
-                case (Key.RIGHT - 1000):
-                    line.moveRight();
-                    break;
-                case (Key.LEFT - 1000):
-                    line.moveLeft();
-                    break;
-                case (Key.INSERT - 1000):
-                    line.setMode();
-                    break;
-                case (Key.SUPR - 1000):
-                    line.suprimirChar();
-                    break;
-                case (Key.HOME - 1000):
-                    line.moveHome();
-                    break;
-                case (Key.END - 1000):
-                    line.moveEnd();
-                    break;
-                case Key.EXIT:
-                    System.out.println("Bye bye. Have a nice day!");
-                    break;
-                case Key.CARAC:
-                    System.out.println("Error while entering code");
-                    this.unsetRaw();
-                    return "ERROR";
-                case Key.DEL:
-                    line.deleteChar();
-                    break;
-                default:
-                    line.addChar((char) lect);
+        try {
+            while (lect != Key.EXIT && lect != Key.CRTL_C) {
+                lect = this.read();
+                switch (lect) {
+                    case (Key.UP - 1000):
+                        line.moveUp();
+                        break;
+                    case (Key.DOWN - 1000):
+                        line.moveDown();
+                        break;
+                    case (Key.RIGHT - 1000):
+                        line.moveRight();
+                        break;
+                    case (Key.LEFT - 1000):
+                        line.moveLeft();
+                        break;
+                    case (Key.INSERT - 1000):
+                        //to flush Buffer
+                        this.read();
+                        line.setMode();
+                        break;
+                    case (Key.SUPR - 1000):
+                        //to flush Buffer
+                        this.read();
+                        line.suprimirChar();
+                        break;
+                    case (Key.HOME - 1000):
+                        line.moveHome();
+                        break;
+                    case (Key.END - 1000):
+                        line.moveEnd();
+                        break;
+                    case Key.EXIT:
+                        console.clear();
+                        System.out.println("Bye bye. Have a nice day!");
+                        break;
+                    case Key.CARAC:
+                        console.clear();
+                        System.out.println("Error while entering code");
+                        this.unsetRaw();
+                        return "ERROR";
+                    case Key.DEL:
+                        line.deleteChar();
+                        break;
+                    default:
+                        line.addChar((char) lect);
+                        break;
+                }
             }
-        }
-        }catch(IndexOutOfBoundsException ex){
+        } catch (IndexOutOfBoundsException ex) {
             System.out.println("Error: out of boundaries");
         }
         this.unsetRaw();
+        console.moveTo(2,1);
         return line.toString();
     }
 }

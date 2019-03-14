@@ -14,12 +14,13 @@ import java.util.Observable;
 public class Line extends Observable {
 
     private StringLine line;
-    private boolean mode = Boolean.FALSE; //True: sobreescriptura:setCharAt. False: inserció:insertCharAt
+    private boolean mode; //True: sobreescriptura:setCharAt. False: inserció:insertCharAt
     private int posx; //és la posició del cursor respecte la línia, no sobre la comanda
 
     public Line(int max) {
         this.posx = 0;
         this.line = new StringLine(max);
+        this.mode = Boolean.FALSE;
     }
 
     public void addChar(char c) throws IndexOutOfBoundsException {
@@ -34,7 +35,7 @@ public class Line extends Observable {
         this.notifyObservers();
     }
 
-    public void deleteChar() throws IndexOutOfBoundsException {
+    public void deleteChar()  {
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
         this.setChanged();
@@ -42,7 +43,7 @@ public class Line extends Observable {
 
     }
 
-    public void suprimirChar() throws IndexOutOfBoundsException {
+    public void suprimirChar() {
         this.line.deleteCharAt(this.posx);
         this.setChanged();
         this.notifyObservers();
@@ -57,7 +58,7 @@ public class Line extends Observable {
     }
 
     public void moveRight() {
-        if (this.posx < this.line.length()) {
+        if (this.posx < this.line.MAX) {
             this.posx++;
             this.setChanged();
             this.notifyObservers();
@@ -77,36 +78,30 @@ public class Line extends Observable {
 
     }
 
-    public void moveUp() throws IndexOutOfBoundsException {
-        int fin = this.posx - this.getNumCols();
+    public void moveUp(){
+        int fin = this.posx - line.MAX;
         if (fin > 0) {
             this.posx = fin;
             this.setChanged();
             this.notifyObservers();
-
-        } else {
-            throw new IndexOutOfBoundsException();
+        } else{
+            this.moveHome();;
         }
     }
 
     public void moveDown() throws IndexOutOfBoundsException {
-        int fin = this.posx + this.getNumCols();
+        int fin = this.posx + line.MAX;
         if (fin < line.MAX) {
             this.posx = fin;
             this.setChanged();
             this.notifyObservers();
-        } else {
-            throw new IndexOutOfBoundsException();
+        } else{
+            this.moveEnd();
         }
     }
 
     public int getLinePos() {
         return this.posx;
-    }
-
-    public int getNumCols() {
-        int limit = 40;
-        return limit;
     }
 
     @Override
@@ -125,14 +120,12 @@ public class Line extends Observable {
         return this.mode;
     }
 
-    public Boolean setPositionAt(int posx) {
+    public void setPositionAt(int posx) {
         if (posx > 0 && posx < line.MAX) {
             this.posx = posx;
-            return Boolean.TRUE;
+            this.setChanged();
+            this.notifyObservers();
         }
-        this.setChanged();
-        this.notifyObservers();
-        return Boolean.FALSE;
-    }
 
+    }
 }
