@@ -46,29 +46,6 @@ public  class Console implements Observer {
         }
     }
 
-    public void moveUp() {
-        this.controlConsole("\033[2A");
-    }
-
-    public void moveDown() {
-        this.controlConsole("\033[2B");
-    }
-
-    public void moveRigth() {
-        this.controlConsole("\033[2C");
-    }
-
-    public void moveLeft() {
-        this.controlConsole("\033[2D");
-    }
-
-    public void moveHome(int posy) {
-        this.controlConsole("\033[0"+posy+"H");
-    }
-
-    public void moveEnd(int posx) {
-        this.controlConsole("\033["+posx+";0H");
-    }
 
     public void clear() {
         this.controlConsole("\033[H \033[2J");
