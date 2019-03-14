@@ -41,9 +41,22 @@ public class EditableBufferedReader extends BufferedReader {
             System.out.println("Error introducing Raw mode");
         }
         return cols;
-
     }
 
+        public String getNumFils() {
+        List<String> comm = Arrays.asList("/bin/sh", "-c", "tput lines 2> /dev/tty");
+        ProcessBuilder p = new ProcessBuilder(comm);
+        String cols = null;
+        try {
+            Process pr = p.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            cols = reader.readLine();
+        } catch (IOException ex) {
+            System.out.println("Error introducing Raw mode");
+        }
+        return cols;
+    }
+        
     public void setRaw() {
         List<String> comm = Arrays.asList("/bin/sh", "-c", "stty -echo raw </dev/tty");
         ProcessBuilder p = new ProcessBuilder(comm);

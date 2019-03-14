@@ -5,166 +5,132 @@
  */
 package editablebufferedreader;
 
+import java.util.Observable;
+
 /**
  *
  * @author virtual
  */
-public class MultiLine {
-     private Console console;
-    private StringLine[] strings;
-    private boolean mode = Boolean.TRUE; //True: sobreescriptura. False: inserció
-    private int posx, posy; //és la posició del cursor respecte la línia, no sobre la comanda
-    private int length;
-    public final int MAX_Lines; //Màxim de línies verticals possibles
-    public final int MAX_Cols; //Màxim de columnes horitzontals possibles    
-    private int limit; //és la posició que queda per escriure en la línia de comanda
+public class MultiLine extends Observable {
 
-    public MultiLine(Console console, int maxCols) {
-        this.console = console;
+    private StringLine[] strings;
+    private boolean mode; //True: sobreescriptura. False: inserció
+    private int posx, posy; //és la posició del cursor respecte la línia, no sobre la comanda
+    public final int MAX_Lines; //Màxim de línies verticals possibles
+
+    public MultiLine(int maxCols, int maxFils) {
+        this.mode = Boolean.FALSE;
         this.posx = 0;
         this.posy = 0;
-        this.length = 0;
-        this.MAX_Lines = this.getNumLines();
-        this.MAX_Cols = maxCols;
-        this.limit = this.MAX_Cols - this.posx;
+        this.MAX_Lines = maxFils;
         this.strings = new StringLine[MAX_Lines];
-        this.strings[this.posy] = new StringLine(MAX_Cols);
+        this.strings[this.posy] = new StringLine(maxCols);
 
     }
 
-    public boolean addChar(char c) {
+    public Boolean newLine() {
+        if (this.posy < this.MAX_Lines) {
+            this.posy++;
+            this.posx = 0;
+            this.strings[this.posy] = new StringLine(this.strings[this.posy - 1].MAX);
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    public void addChar(char c) {
         //Comprovar si estam en mode Sobreescriptura o Inserció
-        if (mode) {
-            this.strings[this.posy].setCharAt(c, this.posx);
-        } else {
-            this.strings[this.posy].insertCharAt(c, this.posx);
-            this.length++;
+        try {
+            if (mode) {
+                this.strings[this.posy].setCharAt(c, this.posx);
+            } else {
+                this.strings[this.posy].insertCharAt(c, this.posx);
+            }
+        } catch (IndexOutOfBoundsException ex) {
+            if (this.newLine()) {
+                this.addChar(c);
+            }
         }
-        boolean fin = outOfBoundaryX(Boolean.TRUE);
-        if (fin) {
-            this.console.print(this.strings[posy].toString(), this.posx);
+        this.setChanged();
+        this.notifyObservers();
 
-        }
-        return fin;
     }
 
-    public boolean deleteChar() {
-        if (this.length == 0) {
-            throw new IndexOutOfBoundsException();
-        } else {
+    public void deleteChar() {
+        try {
             this.strings[this.posy].deleteCharAt(this.posx - 1);
             this.posx--;
-            this.length--;
+        } catch (IndexOutOfBoundsException ex) {
+            if (this.posy != 0) {
+                this.posy--;
+                this.posx = this.strings[this.posy].length();
+                this.deleteChar();
+            }
         }
-        boolean fin = outOfBoundaryX(Boolean.TRUE);
-        if (fin) {
-            this.console.print(this.strings[posy].toString(), this.posx);
-
-        }
-        return fin;
+        this.setChanged();
+        this.notifyObservers();
     }
 
-    public boolean suprimirChar() {
-        if (this.length == 0) {
-            throw new IndexOutOfBoundsException();
-        } else {
-            this.strings[this.posy].deleteCharAt(this.posx);
-            this.length--;
-        }
-        boolean fin = outOfBoundaryX(Boolean.TRUE);
-        if (fin) {
-            this.console.print(this.strings[posy].toString(), this.posx);
-        }
-        return fin;
+    public void suprimirChar() {
+        this.strings[this.posy].deleteCharAt(this.posx);
+        this.setChanged();
+        this.notifyObservers();
     }
 
-    public boolean moveLeft() {
-        if (this.posx == 0) {
-            return false;
+    public void moveLeft() {
+        if (this.posx > 0) {
+            this.posx--;
+            this.setChanged();
+            this.notifyObservers();
+        } else if (this.posy > 0) {
+            this.posy--;
+            this.posx = strings[this.posy].length();
+            this.setChanged();
+            this.notifyObservers();
         }
-        boolean fin = outOfBoundaryX(Boolean.FALSE);
-        if (fin) {
-            this.console.moveLeft();
-        }
-        return fin;
 
     }
 
-    public boolean moveRight() {
-        if (this.posx == this.length) {
-            return false;
+    public void moveRight() {
+        if (this.posx < this.strings[this.posy].MAX) {
+            this.posx++;
+            this.setChanged();
+            this.notifyObservers();
+        } else if (this.strings[this.posy + 1] != null) {
+            this.posy++;
+            this.posx = 0;
+            this.setChanged();
+            this.notifyObservers();
         }
-
-        boolean fin = outOfBoundaryX(Boolean.TRUE);
-        if (fin) {
-            this.console.moveRigth();
-        }
-        return fin;
 
     }
 
     public void moveEnd() {
         this.posx = strings[this.posy].length();
-        this.console.moveEnd(strings[this.posy].length());
+        this.setChanged();
+        this.notifyObservers();
     }
 
     public void moveHome() {
         this.posx = 0;
-        this.console.moveHome(this.posy);
+        this.setChanged();
+        this.notifyObservers();
 
     }
 
-    public boolean moveUp() {
-        boolean fin = outOfBoundaryY(Boolean.TRUE);
-        if (fin) {
-            this.console.moveUp();
-        }
-        return fin;
-    }
-
-    public boolean moveDown() {
-        boolean fin = outOfBoundaryY(Boolean.FALSE);
-        if (fin) {
-            this.console.moveDown();
-        }
-        return fin;
-    }
-
-    public Boolean outOfBoundaryX(Boolean direction) {
-        //True es right --- False es Left
-        int direct = -1;
-        if (direction) {
-            direct = 1;
-        }
-        if (this.posx + direct == this.limit) {
-            this.posy += direct;
-            this.strings[this.posy] = new StringLine(this.MAX_Cols);
-            this.posx = 0;
-        } else {
-            this.posx += direct;
-        }
-        if (this.posx >= this.strings[0].MAX && this.posy >= this.MAX_Lines && direction) {
-            return Boolean.FALSE;
-        } else if (this.posx <= 0 && this.posy <= 0 && !direction) {
-            return Boolean.FALSE;
-        } else {
-            return Boolean.TRUE;
+    public void moveUp() {
+        if (this.posy != 0) {
+            this.posy--;
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
-    public Boolean outOfBoundaryY(Boolean direction) {
-        //True es Up ---- False es Down
-        int direct = 1;
-        if (direction) {
-            direct = -1;
-        }
-        if (this.posy <= 0 && direction) {
-            return Boolean.FALSE;
-        } else if (this.posy >= this.MAX_Lines - 1) {
-            return Boolean.FALSE;
-        } else {
-            this.posy += direct;
-            return Boolean.TRUE;
+    public void moveDown() {
+        if ((this.posy < this.MAX_Lines) && (strings[this.posy + 1] != null)) {
+            this.posy++;
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
@@ -176,13 +142,11 @@ public class MultiLine {
     }
 
     public int getNumCols() {
-        int limit = 40;
-        return limit;
+        return this.strings[this.posy].MAX;
     }
 
     public int getNumLines() {
-        int limit = 1;
-        return limit;
+        return this.MAX_Lines;
     }
 
     public void click() {
@@ -192,7 +156,7 @@ public class MultiLine {
     public String toString() {
         String str = "";
         for (int i = 0; i < this.strings.length; i++) {
-            str += strings[i].toString();
+            str += "\n" + strings[i].toString();
         }
         return str;
     }
@@ -201,18 +165,19 @@ public class MultiLine {
         return this.mode;
     }
 
-    public boolean setMode() {
+    public void setMode() {
         this.mode = !this.mode;
-        return this.mode;
+        this.setChanged();
+        this.notifyObservers();
     }
 
-    public Boolean setPositionAt(int posx, int posy) {
-        if (posx > 0 && posx < strings[0].MAX && posy > 0 && posy < this.MAX_Lines) {
+    public void setPositionAt(int posx, int posy) {
+        if ((posx >= 0) && (posx < strings[0].MAX) && (posy >= 0) && (posy < this.MAX_Lines)) {
             this.posx = posx;
             this.posy = posy;
-            return Boolean.TRUE;
+            this.setChanged();
+            this.notifyObservers();
         }
-        return Boolean.FALSE;
     }
 
 }

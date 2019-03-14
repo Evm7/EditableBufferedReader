@@ -16,21 +16,25 @@ public class StringLine {
     private int length = 0;
 
     public StringLine(int max) {
-        this.MAX = 10*max;
+        this.MAX = 10 * max;
         string = new char[10 * MAX]; //en aquest cas sols es poden fer 10 linies de coid
+    }
+
+    public StringLine(int maxX, int maxY) {
+        this.MAX = maxX;
+        string = new char[maxY * MAX];
     }
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos
     public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException {
-        /*if ((offset > this.MAX) | (offset < 0)) { //comprovar si el offset es mayor que el limite.
-            throw new IndexOutOfBoundsException();
+        if ((offset > this.MAX)) { //comprovar si el offset es mayor que el limite.
+            throw new IndexOutOfBoundsException("Next");
         }
-                */
-     
-            for (int i = this.MAX - 1; i > offset; i--) {
-                this.string[i] = this.string[i - 1];
-            }
-            
+        
+        for (int i = this.MAX - 1; i > offset; i--) {
+            this.string[i] = this.string[i - 1];
+        }
+
         this.string[offset] = c;
         this.length++;
         return this;
@@ -38,12 +42,12 @@ public class StringLine {
     }
 
     public StringLine deleteCharAt(int offset) throws IndexOutOfBoundsException {
-/*
-        if ((offset > this.MAX) | (offset < 0)) {
-            throw new IndexOutOfBoundsException();
-        }
-        */
-        if(offset==0){
+        
+         if (offset < 0) {
+         throw new IndexOutOfBoundsException("Previous");
+         }
+         
+        if (offset == 0 ){
             return this;
         }
 
@@ -56,11 +60,7 @@ public class StringLine {
     }
 
     //implica reemplaçament, pel qual no s'augmenta length (exceptuant no hi ha res)
-    public StringLine setCharAt(char c, int offset) throws IndexOutOfBoundsException {
-
-        if ((offset > this.MAX) | (offset < 0)) {
-            throw new IndexOutOfBoundsException();
-        }
+    public StringLine setCharAt(char c, int offset) {
         this.string[offset] = c;
         if (length == 0) {
             this.length++;
