@@ -88,7 +88,8 @@ public class EditableBufferedReader extends BufferedReader {
             if (lect == Key.EXIT | lect==Key.CRTL_C) {
                 return Key.EXIT_KEY;
             }
-            if((lect = super.read()) == Key.CLAU){
+            if(lect == Key.CLAU){
+                lect = super.read();
                 return lect-1000;
             }                   
         } catch (IOException ex) {
@@ -103,6 +104,7 @@ public class EditableBufferedReader extends BufferedReader {
         this.setRaw();
         Boolean loop = Boolean.TRUE;
         int lect = -1;
+        try{
         while (lect != Key.EXIT && lect!= Key.CRTL_C) {
             lect = this.read();
             switch (lect) {
@@ -131,7 +133,7 @@ public class EditableBufferedReader extends BufferedReader {
                     line.moveEnd();
                     break;
                 case Key.EXIT:
-                    System.out.println("\nBye bye. Have a nice day!");
+                    System.out.println("Bye bye. Have a nice day!");
                     break;
                 case Key.CARAC:
                     System.out.println("Error while entering code");
@@ -143,6 +145,9 @@ public class EditableBufferedReader extends BufferedReader {
                 default:
                     line.addChar((char) lect);
             }
+        }
+        }catch(IndexOutOfBoundsException ex){
+            System.out.println("Error: out of boundaries");
         }
         this.unsetRaw();
         return line.toString();

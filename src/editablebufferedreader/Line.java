@@ -22,7 +22,7 @@ public class Line {
         this.line = new StringLine(max);
     }
 
-    public void addChar(char c) {
+    public void addChar(char c) throws IndexOutOfBoundsException{
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
             this.line.setCharAt(c, this.posx);
@@ -33,14 +33,14 @@ public class Line {
         this.console.print(this.line.toString());
     }
 
-    public void deleteChar() {
+    public void deleteChar() throws IndexOutOfBoundsException{
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
         this.console.print(this.line.toString());
 
     }
 
-    public void suprimirChar() {
+    public void suprimirChar() throws IndexOutOfBoundsException{
         this.line.deleteCharAt(this.posx);
         this.console.print(this.line.toString());
     }

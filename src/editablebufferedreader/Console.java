@@ -32,7 +32,7 @@ public final class Console {
     
     public void print(String line){
         this.controlConsole("\033[s");
-        this.clear();
+        //this.clear();
         System.out.print(line);
         this.controlConsole("\033[u");
     }
@@ -62,7 +62,7 @@ public final class Console {
     }
 
     public void clear() {
-        this.controlConsole("\033[2J \033[f");
+        this.controlConsole("\033[2J");
     }
 
     public void moveTo(int posx, int posy){

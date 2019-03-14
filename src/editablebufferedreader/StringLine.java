@@ -22,7 +22,7 @@ public class StringLine {
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos
 
-    public StringLine insertCharAt(char c, int offset) {
+    public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException{
         if ((offset > this.MAX) | (offset < 0)) { //comprovar si el offset es mayor que el limite.
             throw new IndexOutOfBoundsException();
         }
@@ -37,7 +37,7 @@ public class StringLine {
 
     }
 
-    public StringLine deleteCharAt(int offset) {
+    public StringLine deleteCharAt(int offset) throws IndexOutOfBoundsException {
 
         if ((offset > this.MAX) | (offset <= 0)) {
             throw new IndexOutOfBoundsException();
@@ -51,7 +51,7 @@ public class StringLine {
     }
 
     //implica reemplaçament, pel qual no s'augmenta length (exceptuant no hi ha res)
-    public StringLine setCharAt(char c, int offset) {
+    public StringLine setCharAt(char c, int offset) throws IndexOutOfBoundsException{
 
         if ((offset > this.MAX) | (offset < 0)) {
             throw new IndexOutOfBoundsException();
