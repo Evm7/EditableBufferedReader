@@ -108,7 +108,7 @@ public class EditableBufferedReader extends BufferedReader {
                 lect = super.read();
                 if (lect == EditableBufferedReader.CLAU) {
                     lect = super.read();
-                    return lect + 1000;
+                    return lect - 1000;
                 } else {
                     return CARAC;
                 }
@@ -134,28 +134,28 @@ public class EditableBufferedReader extends BufferedReader {
         while (lect != EXIT_KEY) {
             lect = this.read();
             switch (lect) {
-                case (UP + 1000):
+                case (UP - 1000):
                     line.moveUp();
                     break;
-                case (DOWN + 1000):
+                case (DOWN - 1000):
                     line.moveDown();
                     break;
-                case (RIGHT + 1000):
+                case (RIGHT - 1000):
                     line.moveRight();
                     break;
-                case (LEFT + 1000):
+                case (LEFT - 1000):
                     line.moveLeft();
                     break;
-                case (INSERT + 1000):
+                case (INSERT - 1000):
                     line.setMode();
                     break;
-                case (SUPR + 1000):
+                case (SUPR - 1000):
                     line.suprimirChar();
                     break;
-                case (HOME + 1000):
+                case (HOME - 1000):
                     line.moveHome();
                     break;
-                case (END + 1000):
+                case (END - 1000):
                     line.moveEnd();
                     break;
                 case EXIT_KEY:
