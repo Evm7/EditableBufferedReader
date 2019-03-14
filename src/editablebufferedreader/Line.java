@@ -15,25 +15,19 @@ public class Line {
     private StringLine line;
     private boolean mode = Boolean.FALSE; //True: sobreescriptura:setCharAt. False: inserció:insertCharAt
     private int posx; //és la posició del cursor respecte la línia, no sobre la comanda
-    private int length;
 
-    public Line(Console console) {
+    public Line(Console console, int max) {
         this.console = console;
         this.posx = 0;
-        this.length = 0;
-        this.line = new StringLine();
+        this.line = new StringLine(max);
     }
 
     public void addChar(char c) {
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
             this.line.setCharAt(c, this.posx);
-            if (this.length == 0) {
-                this.length++;
-            }
         } else {
             this.line.insertCharAt(c, this.posx);
-            this.length++;
         }
         this.posx++;
         this.console.print(this.line.toString());
@@ -42,14 +36,12 @@ public class Line {
     public void deleteChar() {
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
-        this.length--;
         this.console.print(this.line.toString());
 
     }
 
     public void suprimirChar() {
         this.line.deleteCharAt(this.posx);
-        this.length--;
         this.console.print(this.line.toString());
     }
 
@@ -61,15 +53,15 @@ public class Line {
     }
 
     public void moveRight() {
-        if (this.posx < this.length) {
+        if (this.posx < this.line.length()) {
             this.posx++;
             this.console.moveRigth();
         }
     }
 
     public void moveEnd() {
-        this.posx = this.length;
-        this.console.moveEnd(this.length);
+        this.posx = this.line.length();
+        this.console.moveEnd(this.posx);
     }
 
     public void moveHome() {

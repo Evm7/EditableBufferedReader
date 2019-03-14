@@ -12,11 +12,12 @@ package editablebufferedreader;
 public class StringLine {
 
     private char[] string;
-    public final int MAX = 400; //DEFINIREM EL LÍMIT DE caràctese possibles en LA PANTALLA DE COMANDA
+    public final int MAX; //DEFINIREM EL LÍMIT DE caràctese possibles en LA PANTALLA DE COMANDA
     private int length = 0;
 
-    public StringLine() {
-        string = new char[MAX];
+    public StringLine(int max) {
+        this.MAX=max;
+        string = new char[10*MAX]; //en aquest cas sols es poden fer 10 linies de coid
     }
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos

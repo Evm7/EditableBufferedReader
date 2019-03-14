@@ -28,19 +28,18 @@ public class EditableBufferedReader extends BufferedReader {
     public final static int DOWN = 66;
     public final static int RIGHT = 67;
     public final static int LEFT = 68;
-
     public final static int INSERT = 50;
     public final static int WAVE = 126;
     public final static int SUPR = 51;
-    public final static int O = 79;
     public final static int HOME = 72;
     public final static int END = 70;
+    public final static int DEL = 127;
 
-    /**
-     * UP 27,91,91,65 DOWN 27,91,91,66 RIGHT 27.91,91,66 LEFT 27,91,91,68 INSERT
-     * 27,91,91,50,126 SUPR 27,91,91,51,126 HOME 27,91,79,72 END 27,91,79,70
-     *
-     * /
+    //KEYS
+    public final static int EXIT_KEY = 1009;
+    public final static int CARAC = 1010;
+
+    /*
      *
      * @param args
      */
@@ -53,38 +52,25 @@ public class EditableBufferedReader extends BufferedReader {
     }
 
     public String getNumCols() {
-        List<String> comm = Arrays.asList("bash", "-c", "tput cols > /dev/tty");
-        // String[] comm1={"bash", "-c" ,"tput cols 2 > /dev/tty"};
+        List<String> comm = Arrays.asList("/bin/sh", "-c", "tput cols 2> /dev/tty");
         ProcessBuilder p = new ProcessBuilder(comm);
-        p.redirectErrorStream(true);
-
         String cols = null;
-        String result = null;
         try {
-            int i = 0;
             Process pr = p.start();
-            //Process pr = Runtime.getRuntime().exec(comm1);
             BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            StringBuilder builder = new StringBuilder();
-            while ((cols = reader.readLine()) != null) {
-                builder.append(cols);
-                builder.append(System.getProperty("line.separator"));
-            }
-            result = builder.toString();
+            cols =reader.readLine();
         } catch (IOException ex) {
             System.out.println("Error introducing Raw mode");
         }
-        return result;
+        return cols;
 
     }
 
     public void setRaw() {
         List<String> comm = Arrays.asList("/bin/sh", "-c", "stty -echo raw </dev/tty");
-        // String[] comm1={"/bin/sh", "-c" ,"stty raw -echo <//dev/tty"};
         ProcessBuilder p = new ProcessBuilder(comm);
         try {
             p.start();
-            // Runtime.getRuntime().exec(comm1).waitFor();
         } catch (IOException ex) {
             System.out.println("Error introducing Raw mode");
         }
@@ -104,93 +90,82 @@ public class EditableBufferedReader extends BufferedReader {
 
     @Override
     public int read() {
+        /**
+         * A ESC sequencers normal parser. Reads char-by-char. Reads symbols as
+         * well as characters. The symbols to be recognised are:
+         *
+         * UP 27,91,65 DOWN 27,91,66 RIGHT 27.91,66 LEFT 27,91,68 INSERT
+         * 27,91,50,126 SUPR 27,91,51,126 HOME 27,91,79,72 END 27,91,79,70
+         *
+         * @return an int. Symbols must be assigned an int (called KEY in
+         * definitions) which doesn't conflict with existing characters.
+         *
+         */
         int lect = -1;
         try {
             lect = super.read();
             if (lect == EditableBufferedReader.ESC) {
                 lect = super.read();
-
                 if (lect == EditableBufferedReader.CLAU) {
                     lect = super.read();
-                    switch (lect) {
-                        case UP:
-                            return 1000;
-                        case DOWN:
-                            return 1001;
-                        case RIGHT:
-                            return 1002;
-                        case LEFT:
-                            return 1003;
-                        case INSERT:
-                            return 1004;
-                        case SUPR:
-                            return 1005;
-                        case HOME:
-                            return 1006;
-                        case END:
-                            return 1007;
-                        default:
-                            return 1010;
-                    }
+                    return lect + 1000;
                 } else {
-                    return 1010;
+                    return CARAC;
                 }
             } else if (lect == EditableBufferedReader.EXIT) {
-                return 1009;
+                return EXIT_KEY;
             } else if (lect == CRTL_C) {
-                return 1009;
+                return EXIT_KEY;
             } else {
                 return lect;
             }
-
         } catch (IOException ex) {
             System.out.println("Interrupted Exception");
         }
-
         return lect;
     }
 
     @Override
     public String readLine() {
-        Line line = new Line(new Console());
+        Line line = new Line(new Console(), Integer.parseInt((this.getNumCols())));
         this.setRaw();
         Boolean loop = Boolean.TRUE;
         int lect = -1;
-        while (lect != 1009) {
+        while (lect != EXIT_KEY) {
             lect = this.read();
             switch (lect) {
-                case 1000:
+                case (UP + 1000):
                     line.moveUp();
                     break;
-                case 1001:
+                case (DOWN + 1000):
                     line.moveDown();
                     break;
-                case 1002:
+                case (RIGHT + 1000):
                     line.moveRight();
                     break;
-                case 1003:
+                case (LEFT + 1000):
                     line.moveLeft();
                     break;
-                case 1004:
+                case (INSERT + 1000):
                     line.setMode();
                     break;
-                case 1005:
+                case (SUPR + 1000):
                     line.suprimirChar();
                     break;
-                case 1006:
+                case (HOME + 1000):
                     line.moveHome();
                     break;
-                case 1007:
+                case (END + 1000):
                     line.moveEnd();
                     break;
-                case 1009:
+                case EXIT_KEY:
                     System.out.println("\nBye bye. Have a nice day!");
                     break;
-                case 1010:
+                case CARAC:
                     System.out.println("Error while entering code");
                     this.unsetRaw();
                     return "ERROR";
-                case 127:
+                case DEL:
                     line.deleteChar();
                     break;
                 default:

@@ -19,16 +19,16 @@ public class MultiLine {
     public final int MAX_Cols; //Màxim de columnes horitzontals possibles    
     private int limit; //és la posició que queda per escriure en la línia de comanda
 
-    public MultiLine(Console console) {
+    public MultiLine(Console console, int maxCols) {
         this.console = console;
         this.posx = 0;
         this.posy = 0;
         this.length = 0;
         this.MAX_Lines = this.getNumLines();
-        this.MAX_Cols = this.getNumCols();
+        this.MAX_Cols = maxCols;
         this.limit = this.MAX_Cols - this.posx;
         this.strings = new StringLine[MAX_Lines];
-        this.strings[this.posy] = new StringLine();
+        this.strings[this.posy] = new StringLine(MAX_Cols);
 
     }
 
@@ -138,7 +138,7 @@ public class MultiLine {
         }
         if (this.posx + direct == this.limit) {
             this.posy += direct;
-            this.strings[this.posy] = new StringLine();
+            this.strings[this.posy] = new StringLine(this.MAX_Cols);
             this.posx = 0;
         } else {
             this.posx += direct;
