@@ -30,19 +30,19 @@ public class Line {
             this.line.insertCharAt(c, this.posx);
         }
         this.posx++;
-        this.console.print(this.line.toString());
+        this.console.print(this.line.toString(), this.posx);
     }
 
     public void deleteChar() throws IndexOutOfBoundsException{
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
-        this.console.print(this.line.toString());
+        this.console.print(this.line.toString(), this.posx);
 
     }
 
     public void suprimirChar() throws IndexOutOfBoundsException{
         this.line.deleteCharAt(this.posx);
-        this.console.print(this.line.toString());
+        this.console.print(this.line.toString(), this.posx);
     }
 
     public void moveLeft() {

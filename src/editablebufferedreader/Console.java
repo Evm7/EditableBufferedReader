@@ -14,7 +14,7 @@ import java.util.List;
  * @author virtual
  */
 public final class Console {
-
+    
     public Console() {
         //Netejam Consola i ens situem en el principi de la consola.
         controlConsole("\033[0;0H \033[2J");
@@ -29,12 +29,18 @@ public final class Console {
             System.out.println("Error Connecting to Bash");
         }
     }
-    
+    /*
     public void print(String line){
         this.controlConsole("\033[s");
-        //this.clear();
+        this.clear();
         System.out.print(line);
         this.controlConsole("\033[u");
+    }
+    */
+    public void print(String line,int pos){
+        this.clear();
+        System.out.print(line);
+        this.moveTo(pos, 0);
     }
 
     public void moveUp() {
@@ -62,10 +68,10 @@ public final class Console {
     }
 
     public void clear() {
-        this.controlConsole("\033[2J");
+        this.controlConsole("\033[H \033[2J");
     }
 
     public void moveTo(int posx, int posy){
-        this.controlConsole("\033["+posx+";"+posy+"f");
+        this.controlConsole("\033["+posy+";"+posx+"f");
     }
 }

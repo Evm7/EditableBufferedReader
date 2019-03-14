@@ -42,7 +42,7 @@ public class MultiLine {
         }
         boolean fin = outOfBoundaryX(Boolean.TRUE);
         if (fin) {
-            this.console.print(this.strings[posy].toString());
+            this.console.print(this.strings[posy].toString(), this.posx);
 
         }
         return fin;
@@ -58,7 +58,7 @@ public class MultiLine {
         }
         boolean fin = outOfBoundaryX(Boolean.TRUE);
         if (fin) {
-            this.console.print(this.strings[posy].toString());
+            this.console.print(this.strings[posy].toString(), this.posx);
 
         }
         return fin;
@@ -73,7 +73,7 @@ public class MultiLine {
         }
         boolean fin = outOfBoundaryX(Boolean.TRUE);
         if (fin) {
-            this.console.print(this.strings[posy].toString());
+            this.console.print(this.strings[posy].toString(), this.posx);
         }
         return fin;
     }
