@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -32,8 +30,8 @@ public class Console implements Observer {
         ProcessBuilder p = new ProcessBuilder(comm);
         try {
             Process pr = p.start();
-            if(pr.waitFor()==1){
-                 pr.destroy();
+            if (pr.waitFor() == 1) {
+                pr.destroy();
             }
         } catch (IOException ex) {
             System.out.println("Error Connecting to Bash");
@@ -45,15 +43,15 @@ public class Console implements Observer {
     public void updateView() {
         this.clear();
         System.out.print(lines.toString());
-         System.out.flush();
-        this.moveTo(lines.getLinePos()[0] + 1, lines.getLinePos()[1]+1);
+        System.out.flush();
+        this.moveTo(lines.getLinePosX() + 1, lines.getLinePosY() + 1);
     }
 
     public void update(Observable obs, Object args) {
         /*
-        * By checking if they have same reference we check we are updating
-        * the correct observer.
-        */
+         * By checking if they have same reference we check we are updating
+         * the correct observer.
+         */
         if (obs == lines) {
             updateView();
         }
@@ -65,6 +63,22 @@ public class Console implements Observer {
     }
 
     public void moveTo(int posx, int posy) {
-        controlConsole("\033[" + (posy+1) + ";" + (posx + 1) + "f");
+        /*
+         * Console doesn't help movement between lines if posx exceed number of cols.
+         * Moreover, doesn't understand fact that Class Line can occupy more than one
+         * phisical line. Need some Maths to help with that.
+         * Understand that Coordenates starts at 1, not 0 as Java.
+         */
+        int realX = posx % this.lines.MAX_Cols;
+        int realY = 0;
+        Line[] l = this.lines.getLines();
+        for (int i = 0; i <= posy; i++) {
+            realY += l[i].getLength() / this.lines.MAX_Cols;
+            if ((l[i].getLength() % this.lines.MAX_Cols) != 0) {
+                realY++;
+            }
+        }
+
+        controlConsole("\033[" + (realY + 1) + ";" + (realX + 1) + "f");
     }
 }

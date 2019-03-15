@@ -5,25 +5,35 @@
  */
 package editablebufferedreader;
 
-import java.util.Observable;
-
 /**
  *
  * @author Evm7
  */
-public class Line extends Observable {
+public class Line {
 
     private StringLine line;
     private boolean mode; //True: sobreescriptura:setCharAt. False: inserció:insertCharAt
     private int posx; //és la posició del cursor respecte la línia, no sobre la comanda
 
-    public Line(int max) {
+    public Line(int maxX) {
         this.posx = 0;
-        this.line = new StringLine(max);
+        this.line = new StringLine(maxX);
         this.mode = Boolean.FALSE;
     }
 
-    public void addChar(char c)  {
+    public Line(int maxX, int maxY) {
+        this.posx = 0;
+        this.line = new StringLine(maxX, maxY);
+        this.mode = Boolean.FALSE;
+    }
+
+    public Line(boolean mode, StringLine newLine) {
+        this.line = newLine;
+        this.mode = mode;
+        this.posx = newLine.length();
+    }
+
+    public void addChar(char c) throws IndexOutOfBoundsException {
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
             this.line.setCharAt(c, this.posx);
@@ -31,73 +41,39 @@ public class Line extends Observable {
             this.line.insertCharAt(c, this.posx);
         }
         this.posx++;
-        this.setChanged();
-        this.notifyObservers();
     }
 
-    public void deleteChar()  {
+    public void deleteChar() throws IndexOutOfBoundsException {
         this.line.deleteCharAt(this.posx - 1);
         this.posx--;
-        this.setChanged();
-        this.notifyObservers();
-
     }
 
-    public void suprimirChar() {
-        this.line.deleteCharAt(this.posx);
-        this.setChanged();
-        this.notifyObservers();
+    public void suprimirChar() throws IndexOutOfBoundsException {
+        this.line.suprCharAt(this.posx);
     }
 
     public void moveLeft() {
         if (this.posx > 0) {
             this.posx--;
-            this.setChanged();
-            this.notifyObservers();
+        } else {
+            throw new IndexOutOfBoundsException("Left");
         }
     }
 
     public void moveRight() {
         if (this.posx < this.line.MAX) {
             this.posx++;
-            this.setChanged();
-            this.notifyObservers();
+        } else {
+            throw new IndexOutOfBoundsException("Right");
         }
     }
 
     public void moveEnd() {
         this.posx = this.line.length();
-        this.setChanged();
-        this.notifyObservers();
     }
 
     public void moveHome() {
         this.posx = 0;
-        this.setChanged();
-        this.notifyObservers();
-
-    }
-
-    public void moveUp(){
-        int fin = this.posx - line.MAX;
-        if (fin > 0) {
-            this.posx = fin;
-            this.setChanged();
-            this.notifyObservers();
-        } else{
-            this.moveHome();;
-        }
-    }
-
-    public void moveDown() {
-        int fin = this.posx + line.MAX;
-        if (fin < line.MAX) {
-            this.posx = fin;
-            this.setChanged();
-            this.notifyObservers();
-        } else{
-            this.moveEnd();
-        }
     }
 
     public int getLinePos() {
@@ -113,19 +89,29 @@ public class Line extends Observable {
         return this.mode;
     }
 
-    public boolean setMode() {
-        this.mode = !this.mode;
-        this.setChanged();
-        this.notifyObservers();
-        return this.mode;
+    public void setMode(Boolean mode) {
+        this.mode = mode;
     }
 
-    public void setPositionAt(int posx) {
+    public void setPos(int posx) {
         if (posx > 0 && posx < line.MAX) {
             this.posx = posx;
-            this.setChanged();
-            this.notifyObservers();
         }
+    }
 
+    public int getLength() {
+        return this.line.length();
+    }
+
+    public Line concat(Line line_to_concat) {
+        if(line!=null){
+            this.posx+=line_to_concat.getLength();
+        return (new Line(this.mode, this.line.concat(line_to_concat.getStringLine())));
+        }
+        return null;
+    }
+
+    public StringLine getStringLine() {
+        return this.line;
     }
 }

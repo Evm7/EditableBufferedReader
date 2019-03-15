@@ -43,7 +43,7 @@ public class EditableBufferedReader extends BufferedReader {
         return cols;
     }
 
-        public String getNumFils() {
+    public String getNumFils() {
         List<String> comm = Arrays.asList("/bin/sh", "-c", "tput lines 2> /dev/tty");
         ProcessBuilder p = new ProcessBuilder(comm);
         String cols = null;
@@ -56,7 +56,7 @@ public class EditableBufferedReader extends BufferedReader {
         }
         return cols;
     }
-        
+
     public void setRaw() {
         List<String> comm = Arrays.asList("/bin/sh", "-c", "stty -echo raw </dev/tty");
         ProcessBuilder p = new ProcessBuilder(comm);
@@ -96,7 +96,7 @@ public class EditableBufferedReader extends BufferedReader {
                 return lect;
             }
             lect = super.read();
-            if(lect == Key.CRTL_C ) {
+            if (lect == Key.CRTL_C) {
                 System.err.print("Uau");   ///OJOOOOOOOOOO LLEVAR SI NO ENTRA, EN PRINCIPI CNTRL C
                 return Key.EXIT_KEY;
             }
@@ -169,7 +169,7 @@ public class EditableBufferedReader extends BufferedReader {
             System.out.println("Error: out of boundaries");
         }
         this.unsetRaw();
-        console.moveTo(2,1);
+        console.moveTo(2, 1);
         return lines.toString();
     }
 }

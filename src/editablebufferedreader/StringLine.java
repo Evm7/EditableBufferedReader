@@ -20,16 +20,22 @@ public class StringLine {
     }
 
     public StringLine(int maxX, int maxY) {
-        this.MAX = maxX;
-        string = new char[maxY * MAX];
+        this.MAX = maxX * maxY;
+        string = new char[this.MAX];
+    }
+
+    private StringLine(int max, char[] new_str) {
+        this.MAX=max;
+        this.string = new_str;
+
     }
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos
     public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException {
-        if ((offset > this.MAX)) { //comprovar si el offset es mayor que el limite.
-            throw new IndexOutOfBoundsException("Next");
+        if ((offset > this.MAX) | (this.length + 1) > this.MAX) { //comprovar si el offset es mayor que el limite.
+            throw new IndexOutOfBoundsException("Full");
         }
-        
+
         for (int i = this.MAX - 1; i > offset; i--) {
             this.string[i] = this.string[i - 1];
         }
@@ -41,20 +47,29 @@ public class StringLine {
     }
 
     public StringLine deleteCharAt(int offset) throws IndexOutOfBoundsException {
-        
-         if (offset < 0) {
-         throw new IndexOutOfBoundsException("Previous");
-         }
-         
-        if (offset == 0 ){
-            return this;
-        }
 
-        for (int i = offset; i < this.length - 1; i++) {
-            this.string[i] = this.string[i + 1];
+        if (offset <= 0) {
+            throw new IndexOutOfBoundsException("Previous");
+        } else {
+            for (int i = offset; i < this.length - 1; i++) {
+                this.string[i] = this.string[i + 1];
+            }
+            this.string[this.length - 1] = ' ';
+            this.length--;
         }
-        this.string[this.length - 1] = ' ';
-        this.length--;
+        return this;
+    }
+
+    public StringLine suprCharAt(int offset) throws IndexOutOfBoundsException {
+        if (offset >= this.length) {
+            throw new IndexOutOfBoundsException("Next");
+        } else {
+            for (int i = offset; i < this.length - 1; i++) {
+                this.string[i] = this.string[i + 1];
+            }
+            this.string[this.length - 1] = ' ';
+            this.length--;
+        }
         return this;
     }
 
@@ -74,5 +89,23 @@ public class StringLine {
 
     public int length() {
         return this.length;
+    }
+
+    public StringLine concat(StringLine line) {
+        String s = line.toString();
+        int gen = line.length() + this.length;
+        int i = this.length;
+        while (i < gen && i < this.MAX) {
+            this.string[i] = s.charAt(i);
+            i++;
+        }
+        char[] new_str = new char[this.MAX];
+        this.length = i;
+        if (gen > this.MAX) {
+            s.getChars(gen-i, s.length(), new_str,0);
+                    return (new StringLine(this.MAX, new_str));
+
+        }
+        return null;
     }
 }
