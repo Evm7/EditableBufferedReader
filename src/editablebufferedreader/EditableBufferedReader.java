@@ -96,7 +96,8 @@ public class EditableBufferedReader extends BufferedReader {
                 return lect;
             }
             lect = super.read();
-            if (lect == Key.EXIT | lect == Key.CRTL_C) {
+            if(lect == Key.CRTL_C ) {
+                System.err.print("Uau");   ///OJOOOOOOOOOO LLEVAR SI NO ENTRA, EN PRINCIPI CNTRL C
                 return Key.EXIT_KEY;
             }
             if (lect == Key.CLAU) {
@@ -111,46 +112,45 @@ public class EditableBufferedReader extends BufferedReader {
 
     @Override
     public String readLine() throws IOException {
-        Line line = new Line(Integer.parseInt(this.getNumCols()));
-        Console console = new Console(line);
-        line.addObserver(console);
+        MultiLine lines = new MultiLine(Integer.parseInt(this.getNumCols()), Integer.parseInt(this.getNumFils()));
+        Console console = new Console(lines);
+        lines.addObserver(console);
         this.setRaw();
         int lect = -1;
         try {
-            while (lect != Key.EXIT && lect != Key.CRTL_C) {
+            while (lect != Key.CRTL_C) {
                 lect = this.read();
                 switch (lect) {
                     case (Key.UP - 1000):
-                        line.moveUp();
+                        lines.moveUp();
                         break;
                     case (Key.DOWN - 1000):
-                        line.moveDown();
+                        lines.moveDown();
                         break;
                     case (Key.RIGHT - 1000):
-                        line.moveRight();
+                        lines.moveRight();
                         break;
                     case (Key.LEFT - 1000):
-                        line.moveLeft();
+                        lines.moveLeft();
                         break;
                     case (Key.INSERT - 1000):
                         //to flush Buffer
                         this.read();
-                        line.setMode();
+                        lines.setMode();
                         break;
                     case (Key.SUPR - 1000):
                         //to flush Buffer
                         this.read();
-                        line.suprimirChar();
+                        lines.suprimirChar();
                         break;
                     case (Key.HOME - 1000):
-                        line.moveHome();
+                        lines.moveHome();
                         break;
                     case (Key.END - 1000):
-                        line.moveEnd();
+                        lines.moveEnd();
                         break;
                     case Key.EXIT:
-                        console.clear();
-                        System.out.println("Bye bye. Have a nice day!");
+                        lines.newLine();
                         break;
                     case Key.CARAC:
                         console.clear();
@@ -158,10 +158,10 @@ public class EditableBufferedReader extends BufferedReader {
                         this.unsetRaw();
                         return "ERROR";
                     case Key.DEL:
-                        line.deleteChar();
+                        lines.deleteChar();
                         break;
                     default:
-                        line.addChar((char) lect);
+                        lines.addChar((char) lect);
                         break;
                 }
             }
@@ -170,6 +170,6 @@ public class EditableBufferedReader extends BufferedReader {
         }
         this.unsetRaw();
         console.moveTo(2,1);
-        return line.toString();
+        return lines.toString();
     }
 }

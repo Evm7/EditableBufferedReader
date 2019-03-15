@@ -23,7 +23,7 @@ public class Line extends Observable {
         this.mode = Boolean.FALSE;
     }
 
-    public void addChar(char c) throws IndexOutOfBoundsException {
+    public void addChar(char c)  {
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
             this.line.setCharAt(c, this.posx);
@@ -89,7 +89,7 @@ public class Line extends Observable {
         }
     }
 
-    public void moveDown() throws IndexOutOfBoundsException {
+    public void moveDown() {
         int fin = this.posx + line.MAX;
         if (fin < line.MAX) {
             this.posx = fin;

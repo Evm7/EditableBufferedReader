@@ -19,12 +19,12 @@ import java.util.logging.Logger;
  */
 public class Console implements Observer {
 
-    private Line line;
+    private MultiLine lines;
 
-    public Console(Line line) {
+    public Console(MultiLine lines) {
         //Netejam Consola i ens situem en el principi de la consola.
         controlConsole("\033[0;0H \033[2J");
-        this.line = line;
+        this.lines = lines;
     }
 
     public void controlConsole(String comanda) {
@@ -44,9 +44,9 @@ public class Console implements Observer {
 
     public void updateView() {
         this.clear();
-        System.out.print(line.toString());
+        System.out.print(lines.toString());
          System.out.flush();
-        this.moveTo(line.getLinePos() + 1, 0);
+        this.moveTo(lines.getLinePos()[0] + 1, lines.getLinePos()[1]+1);
     }
 
     public void update(Observable obs, Object args) {
@@ -54,7 +54,7 @@ public class Console implements Observer {
         * By checking if they have same reference we check we are updating
         * the correct observer.
         */
-        if (obs == line) {
+        if (obs == lines) {
             updateView();
         }
     }
@@ -65,6 +65,6 @@ public class Console implements Observer {
     }
 
     public void moveTo(int posx, int posy) {
-        controlConsole("\033[" + posy + ";" + (posx + 1) + "f");
+        controlConsole("\033[" + (posy+1) + ";" + (posx + 1) + "f");
     }
 }

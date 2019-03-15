@@ -155,8 +155,10 @@ public class MultiLine extends Observable {
 
     public String toString() {
         String str = "";
-        for (int i = 0; i < this.strings.length; i++) {
+        int i =0;
+        while(strings[i]!=null) {
             str += "\n" + strings[i].toString();
+            i++;
         }
         return str;
     }

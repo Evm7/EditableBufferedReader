@@ -6,7 +6,6 @@
 package editablebufferedreader;
 
 /**
- *
  * @author Evm7
  */
 public class StringLine {
