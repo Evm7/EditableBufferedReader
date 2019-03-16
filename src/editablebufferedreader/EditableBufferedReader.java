@@ -157,6 +157,8 @@ public class EditableBufferedReader extends BufferedReader {
                         System.out.println("Error while entering code");
                         this.unsetRaw();
                         return "ERROR";
+                    case Key.CRTL_C:
+                        break;
                     case Key.DEL:
                         lines.deleteChar();
                         break;
@@ -169,7 +171,7 @@ public class EditableBufferedReader extends BufferedReader {
             System.out.println("Error: out of boundaries");
         }
         this.unsetRaw();
-        console.moveTo(2, 1);
+        console.clear();
         return lines.toString();
     }
 }

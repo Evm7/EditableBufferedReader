@@ -69,16 +69,14 @@ public class Console implements Observer {
          * phisical line. Need some Maths to help with that.
          * Understand that Coordenates starts at 1, not 0 as Java.
          */
-        int realX = posx % this.lines.MAX_Cols;
+        int realX = posx % (this.lines.MAX_Cols-1);
         int realY = 0;
         Line[] l = this.lines.getLines();
         for (int i = 0; i <= posy; i++) {
             realY += l[i].getLength() / this.lines.MAX_Cols;
-            if ((l[i].getLength() % this.lines.MAX_Cols) != 0) {
-                realY++;
-            }
+            realY++;
         }
 
-        controlConsole("\033[" + (realY+1) + ";" + (realX+1) + "f");
+        controlConsole("\033[" + (realY) + ";" + (realX+1) + "f");
     }
 }

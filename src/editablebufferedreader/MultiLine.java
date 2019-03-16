@@ -172,7 +172,7 @@ public class MultiLine extends Observable {
         String str = "";
         int i = 0;
         while (lines[i] != null) {
-            str += "\n" + lines[i].toString();
+            str += lines[i].toString()+"\n";
             i++;
         }
         return str;
