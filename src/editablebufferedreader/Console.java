@@ -44,7 +44,7 @@ public class Console implements Observer {
         this.clear();
         System.out.print(lines.toString());
         System.out.flush();
-        this.moveTo(lines.getLinePosX() + 1, lines.getLinePosY() + 1);
+        this.moveTo(lines.getLinePosX(), lines.getLinePosY());
     }
 
     public void update(Observable obs, Object args) {
@@ -58,7 +58,7 @@ public class Console implements Observer {
     }
 
     public void clear() {
-        this.controlConsole("\033[H \033[2J");
+        this.controlConsole("\033[1;1f \033[2J");
         System.out.flush();
     }
 
@@ -79,6 +79,6 @@ public class Console implements Observer {
             }
         }
 
-        controlConsole("\033[" + (realY + 1) + ";" + (realX + 1) + "f");
+        controlConsole("\033[" + (realY+1) + ";" + (realX+1) + "f");
     }
 }
