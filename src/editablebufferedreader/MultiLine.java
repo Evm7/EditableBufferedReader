@@ -172,7 +172,7 @@ public class MultiLine extends Observable {
         String str = "";
         int i = 0;
         while (lines[i] != null) {
-            str += lines[i].toString()+"\n";
+            str += "\r"+lines[i].toString()+"\n";
             i++;
         }
         return str;
@@ -184,8 +184,9 @@ public class MultiLine extends Observable {
 
     public void setMode() {
         this.mode = !this.mode;
-        for(Line l: lines){
-            l.setMode(this.mode);
+        int i =0;
+        while(this.lines[i]!=null){
+            this.lines[i].setMode(this.mode);
         }
         this.setChanged();
         this.notifyObservers();
