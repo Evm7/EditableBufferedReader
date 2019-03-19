@@ -1,0 +1,68 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package editablebufferedreader_EDITOR;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+/**
+ *
+ * @author Evm7
+ */
+public class Console implements Observer {
+
+    private MultiLine lines;
+
+    public Console(MultiLine lines) {
+        //Netejam Consola i ens situem en el principi de la consola.
+        System.out.print("\033[0;0H \033[2J");
+        this.lines = lines;
+    }
+
+
+    public void updateView() {
+        this.clear();
+        System.out.print(lines.toString());
+        System.out.flush();
+        this.moveTo(lines.getLinePosX(), lines.getLinePosY());
+    }
+
+    public void update(Observable obs, Object args) {
+        /*
+         * By checking if they have same reference we check we are updating
+         * the correct observer.
+         */
+        if (obs == lines) {
+            updateView();
+        }
+    }
+
+    public void clear() {
+        System.out.print("\033[1;1f \033[2J");
+        System.out.flush();
+    }
+
+    public void moveTo(int posx, int posy) {
+        /*
+         * Console doesn't help movement between lines if posx exceed number of cols.
+         * Moreover, doesn't understand fact that Class Line can occupy more than one
+         * phisical line. Need some Maths to help with that.
+         * Understand that Coordenates starts at 1, not 0 as Java.
+         */
+        int realX = posx % (this.lines.MAX_Cols-1);
+        int realY = 0;
+        Line[] l = this.lines.getLines();
+        for (int i = 0; i <= posy; i++) {
+            realY += l[i].getLength() / this.lines.MAX_Cols;
+            realY++;
+        }
+
+        System.out.print("\033[" + (realY) + ";" + (realX+1) + "f");
+    }
+}
