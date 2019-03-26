@@ -34,7 +34,6 @@ public class StringLine {
         for (int i = this.MAX - 1; i > offset; i--) {
             this.string[i] = this.string[i - 1];
         }
-
         this.string[offset] = c;
         this.length++;
         return this;
@@ -84,10 +83,6 @@ public class StringLine {
     @Override
     public String toString() {
         return new String(this.string, 0, this.MAX);
-    }
-
-    public String toString(int posx) {
-        return new String(this.string, posx, this.MAX);
     }
 
     public int length() {

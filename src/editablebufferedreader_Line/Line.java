@@ -23,12 +23,6 @@ public class Line extends Observable {
         this.mode = Boolean.FALSE;
     }
 
-    public Line(int maxX, int maxY) {
-        this.posx = 0;
-        this.line = new StringLine(maxX, maxY);
-        this.mode = Boolean.FALSE;
-    }
-
     public void addChar(char c) throws IndexOutOfBoundsException {
         //Comprovar si estam en mode Sobreescriptura o Inserció
         if (mode) {
@@ -37,7 +31,6 @@ public class Line extends Observable {
             this.line.insertCharAt(c, this.posx);
         }
         this.posx++;
-
         Key arg = new Key(c+"");
         this.setChanged();
         this.notifyObservers(arg);
@@ -150,16 +143,5 @@ public class Line extends Observable {
         this.setChanged();
         this.notifyObservers(arg);
         return this.mode;
-    }
-
-    public void setPositionAt(int posx) {
-        if (posx > 0 && posx < line.MAX) {
-            this.posx = posx;
-            Key arg = new Key(String.format(Key.MOVE_TO, 0, this.posx));
-            this.setChanged();
-            this.notifyObservers(arg);
-
-        }
-
     }
 }
