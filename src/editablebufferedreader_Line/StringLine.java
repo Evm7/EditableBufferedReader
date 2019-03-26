@@ -16,8 +16,8 @@ public class StringLine {
     private int length = 0;
 
     public StringLine(int max) {
-        this.MAX = 10 * max;
-        string = new char[10 * MAX]; //en aquest cas sols es poden fer 10 linies de coid
+        this.MAX = max;
+        string = new char[this.MAX]; //en aquest cas sols es poden fer 10 linies de coid
     }
 
     public StringLine(int maxX, int maxY) {
@@ -69,7 +69,6 @@ public class StringLine {
     }
 
     //implica reemplaçament, pel qual no s'augmenta length (exceptuant no hi ha res)
-
     public StringLine setCharAt(char c, int offset) throws IndexOutOfBoundsException {
 
         if ((offset > this.MAX) | (offset < 0)) {
@@ -85,6 +84,10 @@ public class StringLine {
     @Override
     public String toString() {
         return new String(this.string, 0, this.MAX);
+    }
+
+    public String toString(int posx) {
+        return new String(this.string, posx, this.MAX);
     }
 
     public int length() {

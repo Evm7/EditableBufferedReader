@@ -23,5 +23,6 @@ public class TestReadLine {
             e.printStackTrace();
         }
         System.out.println("\nline is: " + str);
+        System.out.print("\r");
     }
 }

@@ -5,9 +5,6 @@
  */
 package editablebufferedreader_Line;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,15 +18,17 @@ public class Console implements Observer {
 
     public Console(Line line) {
         //Netejam Consola i ens situem en el principi de la consola.
-        System.out.print("\033[0;0H \033[2J");
+        System.out.print(Key.CLEAR_KEY);
         this.line = line;
     }
 
-    public void updateView() {
-        this.clear();
-        System.out.print(line.toString());
-         System.out.flush();
-        this.moveTo(line.getLinePos() + 1, 0);
+    public void updateView(Object arg) {
+        Key key=(Key) arg;
+        if(key.getPayload()=='\u0000'){
+            System.out.print(key.getCode());
+        }else{
+            System.out.print(key.getPayload());
+        }
     }
 
     public void update(Observable obs, Object args) {
@@ -38,16 +37,17 @@ public class Console implements Observer {
         * the correct observer.
         */
         if (obs == line) {
-            updateView();
+            updateView(args);
         }
     }
 
     public void clear() {
-        System.out.print("\033[H \033[2J");
+        System.out.print(Key.CLEAR_KEY);
         System.out.flush();
     }
 
     public void moveTo(int posx, int posy) {
-        System.out.print("\033[" + posy + ";" + (posx + 1) + "f");
+        System.out.print(String.format(Key.MOVE_TO, posy, posx));
     }
+
 }

@@ -37,55 +37,68 @@ public class Line extends Observable {
             this.line.insertCharAt(c, this.posx);
         }
         this.posx++;
+
+        Key arg = new Key(Key.ADD, c);
         this.setChanged();
-        this.notifyObservers();
+        this.notifyObservers(arg);
     }
 
     public void deleteChar() {
         try {
             this.line.deleteCharAt(this.posx - 1);
             this.posx--;
+            Key arg = new Key(Key.LEFT_KEY);
+            Key arg2 = new Key(Key.DEL_KEY);
             this.setChanged();
-            this.notifyObservers();
-        } catch (IndexOutOfBoundsException ex) {}
+            this.notifyObservers(arg);
+            this.setChanged();
+            this.notifyObservers(arg2);
+        } catch (IndexOutOfBoundsException ex) {
+        }
 
     }
 
     public void suprimirChar() {
-        try{
+        try {
             this.line.suprCharAt(this.posx);
-        this.setChanged();
-        this.notifyObservers();
-        }catch(IndexOutOfBoundsException ex){}
-        
+            Key arg = new Key(Key.DEL_KEY);
+            this.setChanged();
+            this.notifyObservers(arg);
+        } catch (IndexOutOfBoundsException ex) {
+        }
+
     }
 
     public void moveLeft() {
         if (this.posx > 0) {
             this.posx--;
+            Key arg = new Key(Key.LEFT_KEY);
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(arg);
         }
     }
 
     public void moveRight() {
-        if (this.posx < this.line.MAX) {
+        if (this.posx < this.line.length()) {
             this.posx++;
+            Key arg = new Key(Key.RIGHT_KEY);
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(arg);
         }
     }
 
     public void moveEnd() {
         this.posx = this.line.length();
+        Key arg = new Key(String.format(Key.END_KEY, this.line.length()+1));
         this.setChanged();
-        this.notifyObservers();
+        this.notifyObservers(arg);
     }
 
     public void moveHome() {
         this.posx = 0;
+        Key arg = new Key(Key.HOME_KEY);
         this.setChanged();
-        this.notifyObservers();
+        this.notifyObservers(arg);
 
     }
 
@@ -93,8 +106,9 @@ public class Line extends Observable {
         int fin = this.posx - line.MAX;
         if (fin > 0) {
             this.posx = fin;
+            Key arg = new Key(Key.UP_KEY);
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(arg);
         } else {
             this.moveHome();;
         }
@@ -104,8 +118,9 @@ public class Line extends Observable {
         int fin = this.posx + line.MAX;
         if (fin < line.MAX) {
             this.posx = fin;
+            Key arg = new Key(Key.DOWN_KEY);
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(arg);
         } else {
             this.moveEnd();
         }
@@ -126,16 +141,24 @@ public class Line extends Observable {
 
     public boolean setMode() {
         this.mode = !this.mode;
+        Key arg;
+        if (this.mode) {
+            arg = new Key(Key.OVERWRITE_KEY);
+        } else {
+            arg = new Key(Key.INSERT_KEY);
+        }
         this.setChanged();
-        this.notifyObservers();
+        this.notifyObservers(arg);
         return this.mode;
     }
 
     public void setPositionAt(int posx) {
         if (posx > 0 && posx < line.MAX) {
             this.posx = posx;
+            Key arg = new Key(String.format(Key.MOVE_TO, 0, this.posx));
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(arg);
+
         }
 
     }
