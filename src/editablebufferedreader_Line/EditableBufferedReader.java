@@ -108,7 +108,7 @@ public class EditableBufferedReader extends BufferedReader {
 
     @Override
     public String readLine() throws IOException {
-        Line line = new Line(Integer.parseInt(this.getNumCols()),Integer.parseInt(this.getNumFils()));
+        Line line = new Line(Integer.parseInt(this.getNumCols())-1);
         Console console = new Console(line);
         line.addObserver(console);
         this.setRaw();

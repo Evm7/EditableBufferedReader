@@ -22,7 +22,7 @@ public class TestReadLine {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("\nline is: " + str);
+        System.out.println("line is: \n\r" + str);
         System.out.print("\r");
     }
 }

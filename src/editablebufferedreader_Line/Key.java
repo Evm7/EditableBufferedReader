@@ -29,45 +29,27 @@ public class Key {
     //KEYS
     public final static int EXIT_KEY = 1009;
     public final static int CARAC = 1010;
-    
+
     //CODES
-    public static final String CLEAR_KEY="\033[H\033[2J";
-    public static final String UP_KEY="\033[1A";
-    public static final String DOWN_KEY="\033[1B";
-    public static final String RIGHT_KEY="\033[1C";
-    public static final String LEFT_KEY="\033[1D";
-    public static final String HOME_KEY="\033[0;0f";
-    public static final String END_KEY="\033[0;%df";
-    public static final String INSERT_KEY="\033[4h";
-    public static final String OVERWRITE_KEY="\033[4l";
-    public static final String DEL_KEY="\033[P";
-    public static final String ADD ="add";
-    public static final String MOVE_TO="\033[%d;%df";
-    
-    
+    public static final String CLEAR_KEY = "\033[H\033[2J";
+    public static final String UP_KEY = "\033[1A";
+    public static final String DOWN_KEY = "\033[1B";
+    public static final String RIGHT_KEY = "\033[1C";
+    public static final String LEFT_KEY = "\033[1D";
+    public static final String HOME_KEY = "\033[0;0f";
+    public static final String END_KEY = "\033[0;%df";
+    public static final String INSERT_KEY = "\033[4h";
+    public static final String OVERWRITE_KEY = "\033[4l";
+    public static final String DEL_KEY = "\033[P";
+    public static final String MOVE_TO = "\033[%d;%df";
+
     private String code;
-    private char payload;
-    
-    public Key(String code, char payload){
-        this.code=code;
-        this.payload=payload;
+
+    public Key(String code) {
+        this.code = code;
     }
-    
-    public Key(String code){
-        this.code=code;
-        this.payload='\u0000'; //same as null 
-    }
-    
-    public Key(char payload){
-        this.code="";
-        this.payload=payload;
-    }
-    
-    public String getCode(){
+
+    public String getCode() {
         return this.code;
-    }
-    
-    public char getPayload(){
-        return this.payload;
     }
 }

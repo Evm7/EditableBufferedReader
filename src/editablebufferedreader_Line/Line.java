@@ -38,7 +38,7 @@ public class Line extends Observable {
         }
         this.posx++;
 
-        Key arg = new Key(Key.ADD, c);
+        Key arg = new Key(c+"");
         this.setChanged();
         this.notifyObservers(arg);
     }

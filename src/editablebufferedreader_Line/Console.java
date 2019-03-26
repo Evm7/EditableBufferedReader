@@ -23,19 +23,16 @@ public class Console implements Observer {
     }
 
     public void updateView(Object arg) {
-        Key key=(Key) arg;
-        if(key.getPayload()=='\u0000'){
-            System.out.print(key.getCode());
-        }else{
-            System.out.print(key.getPayload());
-        }
+        Key key = (Key) arg;
+        System.out.print(key.getCode());
+
     }
 
     public void update(Observable obs, Object args) {
         /*
-        * By checking if they have same reference we check we are updating
-        * the correct observer.
-        */
+         * By checking if they have same reference we check we are updating
+         * the correct observer.
+         */
         if (obs == line) {
             updateView(args);
         }
