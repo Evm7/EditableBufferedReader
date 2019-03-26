@@ -21,11 +21,6 @@ public class Line {
         this.mode = Boolean.FALSE;
     }
 
-    public Line(int maxX, int maxY) {
-        this.posx = 0;
-        this.line = new StringLine(maxX, maxY);
-        this.mode = Boolean.FALSE;
-    }
 
     public Line(boolean mode, StringLine newLine) {
         this.line = newLine;
@@ -52,7 +47,7 @@ public class Line {
         this.line.suprCharAt(this.posx);
     }
 
-    public void moveLeft() {
+    public void moveLeft() throws IndexOutOfBoundsException{
         if (this.posx > 0) {
             this.posx--;
         } else {
@@ -60,8 +55,8 @@ public class Line {
         }
     }
 
-    public void moveRight() {
-        if (this.posx < this.line.MAX) {
+    public void moveRight() throws IndexOutOfBoundsException{
+        if (this.posx < this.line.length()) {
             this.posx++;
         } else {
             throw new IndexOutOfBoundsException("Right");
@@ -93,9 +88,11 @@ public class Line {
         this.mode = mode;
     }
 
-    public void setPos(int posx) {
-        if (posx > 0 && posx < line.MAX) {
+    public void setPos(int posx) throws IndexOutOfBoundsException{
+        if (posx >= 0 && posx < line.length()) {
             this.posx = posx;
+        }else{
+            throw new IndexOutOfBoundsException("End");
         }
     }
 
@@ -103,10 +100,14 @@ public class Line {
         return this.line.length();
     }
 
+    //Append curreny Line with Line passed as parameter
     public Line concat(Line line_to_concat) {
         if(line!=null){
             this.posx+=line_to_concat.getLength();
-        return (new Line(this.mode, this.line.concat(line_to_concat.getStringLine())));
+            StringLine str=this.line.concat(line_to_concat.getStringLine());
+            if(str!=null){
+                return (new Line(this.mode,str));
+            }
         }
         return null;
     }

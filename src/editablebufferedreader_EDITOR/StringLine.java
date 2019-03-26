@@ -15,8 +15,8 @@ public class StringLine {
     private int length = 0;
 
     public StringLine(int max) {
-        this.MAX = 10 * max;
-        string = new char[10 * MAX]; //en aquest cas sols es poden fer 10 linies de coid
+        this.MAX = max;
+        string = new char[this.MAX]; //en aquest cas sols es poden fer 10 linies de coid
     }
 
     public StringLine(int maxX, int maxY) {
@@ -25,14 +25,14 @@ public class StringLine {
     }
 
     private StringLine(int max, char[] new_str) {
-        this.MAX=max;
+        this.MAX = max;
         this.string = new_str;
 
     }
 
     //insert permet introduir un caràcter entre dos altres, sense reemplaçar-ne cap dels dos
     public StringLine insertCharAt(char c, int offset) throws IndexOutOfBoundsException {
-        if ((offset > this.MAX) | (this.length + 1) > this.MAX) { //comprovar si el offset es mayor que el limite.
+        if ((offset > this.MAX) | (this.length) > this.MAX) { //comprovar si el offset es mayor que el limite.
             throw new IndexOutOfBoundsException("Full");
         }
 
@@ -48,7 +48,7 @@ public class StringLine {
 
     public StringLine deleteCharAt(int offset) throws IndexOutOfBoundsException {
 
-        if (offset <= 0) {
+        if (offset < 0) {
             throw new IndexOutOfBoundsException("Previous");
         } else {
             for (int i = offset; i < this.length - 1; i++) {
@@ -91,19 +91,20 @@ public class StringLine {
         return this.length;
     }
 
+    //append two string lines and return an StringLine of the oversize, if it exists.
     public StringLine concat(StringLine line) {
         String s = line.toString();
-        int gen = line.length() + this.length;
-        int i = this.length;
-        while (i < gen && i < this.MAX) {
+        int lon = line.length() + this.length;
+        int i = this.length + 1;
+        while ((i < lon) && (i < this.MAX)) {
             this.string[i] = s.charAt(i);
             i++;
         }
         char[] new_str = new char[this.MAX];
         this.length = i;
-        if (gen > this.MAX) {
-            s.getChars(gen-i, s.length(), new_str,0);
-                    return (new StringLine(this.MAX, new_str));
+        if (lon > this.MAX) {
+            s.getChars(lon - this.length, s.length(), new_str, 0);
+            return (new StringLine(this.MAX, new_str));
 
         }
         return null;

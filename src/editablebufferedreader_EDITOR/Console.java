@@ -5,9 +5,6 @@
  */
 package editablebufferedreader_EDITOR;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,16 +18,13 @@ public class Console implements Observer {
 
     public Console(MultiLine lines) {
         //Netejam Consola i ens situem en el principi de la consola.
-        System.out.print("\033[0;0H \033[2J");
+        System.out.print(Key.CLEAR_KEY);
         this.lines = lines;
     }
 
-
-    public void updateView() {
-        this.clear();
-        System.out.print(lines.toString());
-        System.out.flush();
-        this.moveTo(lines.getLinePosX(), lines.getLinePosY());
+    public void updateView(Object arg) {
+        Key key = (Key) arg;
+        System.out.print(key.getCode());
     }
 
     public void update(Observable obs, Object args) {
@@ -39,30 +33,16 @@ public class Console implements Observer {
          * the correct observer.
          */
         if (obs == lines) {
-            updateView();
+            updateView(args);
         }
     }
 
     public void clear() {
-        System.out.print("\033[1;1f \033[2J");
+        System.out.print(Key.CLEAR_KEY);
         System.out.flush();
     }
 
     public void moveTo(int posx, int posy) {
-        /*
-         * Console doesn't help movement between lines if posx exceed number of cols.
-         * Moreover, doesn't understand fact that Class Line can occupy more than one
-         * phisical line. Need some Maths to help with that.
-         * Understand that Coordenates starts at 1, not 0 as Java.
-         */
-        int realX = posx % (this.lines.MAX_Cols-1);
-        int realY = 0;
-        Line[] l = this.lines.getLines();
-        for (int i = 0; i <= posy; i++) {
-            realY += l[i].getLength() / this.lines.MAX_Cols;
-            realY++;
-        }
-
-        System.out.print("\033[" + (realY) + ";" + (realX+1) + "f");
+        System.out.print(String.format(Key.MOVE_TO, posy, posx));
     }
 }
