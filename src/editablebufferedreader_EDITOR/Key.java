@@ -41,9 +41,10 @@ public class Key {
     public static final String INSERT_KEY = "\033[4h";
     public static final String OVERWRITE_KEY = "\033[4l";
     public static final String DEL_KEY = "\033[P";
-    public static final String ADD = "add";
     public static final String MOVE_TO = "\033[%d;%df";
     public static final String NEW_LINE = "\033[L";
+    public static final String NEXT_LINE = "\033[E";
+    public static final String ADD_CHAR = "\033[@";
 
     private String code;
 

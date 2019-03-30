@@ -21,7 +21,6 @@ public class Line {
         this.mode = Boolean.FALSE;
     }
 
-
     public Line(boolean mode, StringLine newLine) {
         this.line = newLine;
         this.mode = mode;
@@ -39,15 +38,19 @@ public class Line {
     }
 
     public void deleteChar() throws IndexOutOfBoundsException {
-        this.line.deleteCharAt(this.posx - 1);
-        this.posx--;
+        try {
+            this.line.deleteCharAt(this.posx - 1);
+            this.posx--;
+        }catch(IndexOutOfBoundsException ex){
+            throw ex;
+        }
     }
 
     public void suprimirChar() throws IndexOutOfBoundsException {
         this.line.suprCharAt(this.posx);
     }
 
-    public void moveLeft() throws IndexOutOfBoundsException{
+    public void moveLeft() throws IndexOutOfBoundsException {
         if (this.posx > 0) {
             this.posx--;
         } else {
@@ -55,7 +58,7 @@ public class Line {
         }
     }
 
-    public void moveRight() throws IndexOutOfBoundsException{
+    public void moveRight() throws IndexOutOfBoundsException {
         if (this.posx < this.line.length()) {
             this.posx++;
         } else {
@@ -88,10 +91,10 @@ public class Line {
         this.mode = mode;
     }
 
-    public void setPos(int posx) throws IndexOutOfBoundsException{
+    public void setPos(int posx) throws IndexOutOfBoundsException {
         if (posx >= 0 && posx < line.length()) {
             this.posx = posx;
-        }else{
+        } else {
             throw new IndexOutOfBoundsException("End");
         }
     }
@@ -102,11 +105,11 @@ public class Line {
 
     //Append curreny Line with Line passed as parameter
     public Line concat(Line line_to_concat) {
-        if(line!=null){
-            this.posx+=line_to_concat.getLength();
-            StringLine str=this.line.concat(line_to_concat.getStringLine());
-            if(str!=null){
-                return (new Line(this.mode,str));
+        if (line != null) {
+            this.posx += line_to_concat.getLength();
+            StringLine str = this.line.concat(line_to_concat.getStringLine());
+            if (str != null) {
+                return (new Line(this.mode, str));
             }
         }
         return null;

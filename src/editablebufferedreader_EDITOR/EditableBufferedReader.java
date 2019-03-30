@@ -164,10 +164,10 @@ public class EditableBufferedReader extends BufferedReader {
                 }
             }
         } catch (IndexOutOfBoundsException ex) {
-            System.out.println("Error: out of boundaries");
+            System.out.println("Error: out of boundaries:"+ex);
         }
         this.unsetRaw();
-        console.clear();
+       // console.clear();
         return lines.toString();
     }
 }

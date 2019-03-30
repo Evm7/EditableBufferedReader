@@ -16,7 +16,7 @@ public class StringLine {
 
     public StringLine(int max) {
         this.MAX = max;
-        string = new char[this.MAX]; //en aquest cas sols es poden fer 10 linies de coid
+        string = new char[this.MAX]; 
     }
 
     public StringLine(int maxX, int maxY) {
